@@ -41,6 +41,7 @@ const fs = require('node:fs/promises');
 // Execution time: 555ms
 // CPU Usage: cant benchmark due to quick exe time
 // Memory Usage: cant benchmark due to quick exe time
+// not a production ready code
 (async () => {
   try {
     console.time('write-time');
