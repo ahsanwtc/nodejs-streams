@@ -36,23 +36,66 @@
 //     }); 
 // })();
 
-const fs = require('node:fs/promises');
+// const fs = require('node:fs/promises');
 
 // Execution time: 555ms
 // CPU Usage: cant benchmark due to quick exe time
 // Memory Usage: cant benchmark due to quick exe time
 // not a production ready code
+// (async () => {
+//   try {
+//     console.time('write-time');
+//     const filehandle = await fs.open('thefile.txt', 'w');
+//     const stream = filehandle.createWriteStream();
+//     for (let i = 0; i < 1000000; i++) {
+//       const buffer = Buffer.from(` ${i} `, 'utf-8');
+//       stream.write(buffer);
+//     }
+//     console.timeEnd('write-time');
+//   } catch(e) {
+//     console.log(e);
+//   } 
+// })();
+
+
+const fs = require('node:fs/promises');
+
+// Execution time: 750ms
+// CPU Usage: cant benchmark due to quick exe time
+// Memory Usage: cant benchmark due to quick exe time
+// not a production ready code
 (async () => {
-  try {
-    console.time('write-time');
-    const filehandle = await fs.open('thefile.txt', 'w');
-    const stream = filehandle.createWriteStream();
-    for (let i = 0; i < 1000000; i++) {
+  let i = 0;
+  console.time('write-time');
+  const filehandle = await fs.open('thefile.txt', 'w');
+  const stream = filehandle.createWriteStream();
+
+  const write = () => {
+    while (i < 1000000) {
       const buffer = Buffer.from(` ${i} `, 'utf-8');
-      stream.write(buffer);
+
+      // last write
+      if (i === 999999) {
+        stream.end(buffer);
+        return;
+      }
+
+      // stream full, wait for drain
+      if (!stream.write(buffer)) break;
+
+      i++;
     }
+  };
+
+  write();
+
+  stream.on('drain', () => {
+    write();
+  });
+
+  stream.on('finish', () => {
     console.timeEnd('write-time');
-  } catch(e) {
-    console.log(e);
-  } 
+    filehandle.close();
+  });
+  
 })();
