@@ -23,15 +23,35 @@
 // Execution time: 1.66s
 // CPU Usage: 11%
 // Memory Usage: 1GB
-const fs = require('node:fs');
-(async () => {
-  let filehandle;
+// const fs = require('node:fs');
+// (async () => {
+//   let filehandle;
   
+//     console.time('write-time');
+//     fs.open('thefile.txt', 'w', (err, fd) => {
+//       for (let i = 0; i < 1000000; i++) {
+//         fs.write(fd, i.toString(), () => {});
+//       }
+//       console.timeEnd('write-time');
+//     }); 
+// })();
+
+const fs = require('node:fs/promises');
+
+// Execution time: 555ms
+// CPU Usage: cant benchmark due to quick exe time
+// Memory Usage: cant benchmark due to quick exe time
+(async () => {
+  try {
     console.time('write-time');
-    fs.open('thefile.txt', 'w', (err, fd) => {
-      for (let i = 0; i < 1000000; i++) {
-        fs.write(fd, i.toString(), () => {});
-      }
-      console.timeEnd('write-time');
-    }); 
+    const filehandle = await fs.open('thefile.txt', 'w');
+    const stream = filehandle.createWriteStream();
+    for (let i = 0; i < 1000000; i++) {
+      const buffer = Buffer.from(` ${i} `, 'utf-8');
+      stream.write(buffer);
+    }
+    console.timeEnd('write-time');
+  } catch(e) {
+    console.log(e);
+  } 
 })();

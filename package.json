@@ -1,0 +1,11 @@
+{
+  "name": "nodejs-streams",
+  "version": "1.0.0",
+  "description": "Trying to work with nodejs streams",
+  "main": "write-many.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}
